@@ -15,9 +15,14 @@ public class UserController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping
     public Usuario criarUsuario(@RequestBody Usuario usuario) {
         return usuarioService.criarUsuario(usuario);
+    }
+
+    @PostMapping("/validar")
+    public Usuario validaUsuarioCpf(@RequestBody Usuario usuario) {
+        return usuario;
     }
 
 }
