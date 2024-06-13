@@ -18,7 +18,7 @@ public class SessaoPauta {
     private Pauta pauta;
 
     @Column
-    private LocalDateTime tempoEmAberto;
+    private LocalDateTime tempoLimiteEmAberto;
 
     @Transient
     private Long minutosEmAberto;

@@ -11,6 +11,9 @@ public class VotoSessaoPauta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private Boolean votoPositivo;
+
     @ManyToOne
     @JoinColumn(name = "id-sessao-pauta", nullable = false)
     private SessaoPauta sessaoPauta;
@@ -18,7 +21,4 @@ public class VotoSessaoPauta {
     @ManyToOne
     @JoinColumn(name = "cpf-usuario", nullable = false, unique = true)
     private Usuario usuario;
-
-    @Column
-    private boolean votoPositivo;
 }
