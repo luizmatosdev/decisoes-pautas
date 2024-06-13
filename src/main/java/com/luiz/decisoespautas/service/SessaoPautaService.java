@@ -17,18 +17,11 @@ public class SessaoPautaService {
     private PautaService pautaService;
 
     public SessaoPauta find(Long id) {
-        SessaoPauta sessaoPauta = sessaoPautaRepository.findById(id).orElse(null);
-        if (sessaoPauta == null) {
-            throw new EntityNotFoundException("Sessão Pauta não encontrada");
-        }
-        return sessaoPauta;
+        return sessaoPautaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Sessao Pauta não encontrada"));
     }
 
     public SessaoPauta save(SessaoPauta sessaoPauta) {
         Pauta pauta = pautaService.find(sessaoPauta.getPauta().getId());
-        if (pauta == null) {
-            throw new EntityNotFoundException("Pauta não encontrada");
-        }
         sessaoPauta.setPauta(pauta);
         sessaoPauta.setTempoEmAberto(LocalDateTime.now().plusMinutes(sessaoPauta.getMinutosEmAberto() == null ? 5 : sessaoPauta.getMinutosEmAberto()));
         return sessaoPautaRepository.save(sessaoPauta);
