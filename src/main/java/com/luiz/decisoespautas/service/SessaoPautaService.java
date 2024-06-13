@@ -30,7 +30,7 @@ public class SessaoPautaService {
             throw new EntityNotFoundException("Pauta não encontrada");
         }
         sessaoPauta.setPauta(pauta);
-        sessaoPauta.setTempoEmAberto(LocalDateTime.now().plusMinutes(sessaoPauta.getMinutosEmAberto() == null ? 5 : sessaoPauta.getMinutosEmAberto()));
+        sessaoPauta.setTempoEmAberto(LocalDateTime.now().plusMinutes(sessaoPauta.getMinutosEmAberto() == null ? 1 : sessaoPauta.getMinutosEmAberto()));
         return sessaoPautaRepository.save(sessaoPauta);
     }
 }
