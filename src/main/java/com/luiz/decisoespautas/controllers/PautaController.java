@@ -14,7 +14,7 @@ public class PautaController {
     @Autowired
     private PautaService pautaService;
 
-    @PostMapping(consumes = "application/json")
+    @PostMapping
     public Pauta createPauta(@RequestBody Pauta pauta) {
         return pautaService.save(pauta);
     }

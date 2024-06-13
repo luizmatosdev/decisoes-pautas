@@ -23,7 +23,7 @@ public class SessaoPautaService {
     public SessaoPauta save(SessaoPauta sessaoPauta) {
         Pauta pauta = pautaService.find(sessaoPauta.getPauta().getId());
         sessaoPauta.setPauta(pauta);
-        sessaoPauta.setTempoEmAberto(LocalDateTime.now().plusMinutes(sessaoPauta.getMinutosEmAberto() == null ? 1 : sessaoPauta.getMinutosEmAberto()));
+        sessaoPauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(sessaoPauta.getMinutosEmAberto() == null ? 1 : sessaoPauta.getMinutosEmAberto()));
         return sessaoPautaRepository.save(sessaoPauta);
     }
 }

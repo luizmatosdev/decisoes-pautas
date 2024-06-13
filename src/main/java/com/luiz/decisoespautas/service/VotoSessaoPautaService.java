@@ -41,7 +41,7 @@ public class VotoSessaoPautaService {
     }
 
     private static void validaSeSessaoIncerrada(SessaoPauta sessaoPauta) {
-        if (sessaoPauta.getTempoEmAberto().isBefore(LocalDateTime.now())) {
+        if (sessaoPauta.getTempoLimiteEmAberto().isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("Sessão encerrada");
         }
     }
