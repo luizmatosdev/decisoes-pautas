@@ -7,6 +7,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class SessaoPautaService {
     @Autowired
@@ -27,6 +29,8 @@ public class SessaoPautaService {
         if (pauta == null) {
             throw new EntityNotFoundException("Pauta não encontrada");
         }
+        sessaoPauta.setPauta(pauta);
+        sessaoPauta.setTempoEmAberto(LocalDateTime.now().plusMinutes(sessaoPauta.getMinutosEmAberto() == null ? 5 : sessaoPauta.getMinutosEmAberto()));
         return sessaoPautaRepository.save(sessaoPauta);
     }
 }

@@ -3,7 +3,7 @@ package com.luiz.decisoespautas.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table
@@ -18,5 +18,8 @@ public class SessaoPauta {
     private Pauta pauta;
 
     @Column
-    private Date tempoEmAberto;
+    private LocalDateTime tempoEmAberto;
+
+    @Transient
+    private Long minutosEmAberto;
 }
