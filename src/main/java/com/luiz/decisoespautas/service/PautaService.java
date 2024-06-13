@@ -2,6 +2,7 @@ package com.luiz.decisoespautas.service;
 
 import com.luiz.decisoespautas.entities.Pauta;
 import com.luiz.decisoespautas.repositories.PautaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,10 @@ public class PautaService {
     }
 
     public Pauta find(Long id) {
-        return pautaRepository.findById(id).orElse(null);
+        return pautaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Pauta não encontrada"));
     }
 
     public Pauta save(Pauta pauta) {
-        pautaRepository.save(pauta);
-        return pauta;
+        return pautaRepository.save(pauta);
     }
 }
