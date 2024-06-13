@@ -14,3 +14,6 @@ Uma pauta que poderá ser ativada pelo administrador
 
 ### Voto Pauta
 Cada voto na pauta pelo usuário
+
+# Futuro
+- Adicionar validação de email do CPF?

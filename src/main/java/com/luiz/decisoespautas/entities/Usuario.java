@@ -14,5 +14,5 @@ public class Usuario {
     @Id
     @Column
     private String cpf;
-    // Adicionar email para ser enviado ?
+
 }
