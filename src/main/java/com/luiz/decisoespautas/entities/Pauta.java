@@ -1,8 +1,6 @@
 package com.luiz.decisoespautas.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -10,7 +8,10 @@ import lombok.Data;
 @Table
 public class Pauta {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    @Column
     private String titulo;
+    @Column
     private String descricao;
 }
