@@ -1,5 +1,7 @@
 Utilizando SONARLINT para melhorar a qualidade e desempenho do código
 
+Todas as alterações na estrutura do banco de dados é feita pelo Hibernate
+
 ## Entidades do banco de dados
 ### Usuario
 Usuário que vai fazer a votação na pauta
@@ -12,4 +14,3 @@ Uma pauta que poderá ser ativada pelo administrador
 
 ### Voto Pauta
 Cada voto na pauta pelo usuário
-
