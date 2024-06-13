@@ -16,11 +16,11 @@ public class PautaController {
 
     @PostMapping(consumes = "application/json")
     public Pauta createPauta(@RequestBody Pauta pauta) {
-        return pautaService.createPauta(pauta);
+        return pautaService.save(pauta);
     }
 
     @GetMapping
     public List<Pauta> getAllPautas() {
-        return pautaService.getAllPautas();
+        return pautaService.findAll();
     }
 }
