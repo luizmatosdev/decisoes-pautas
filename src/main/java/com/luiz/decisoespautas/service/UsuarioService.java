@@ -6,10 +6,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class UsuarioService {
 
-    public Usuario criarUsuario(String cpf) {
-        validaCpf(cpf);
-        Usuario usuario = new Usuario();
-        usuario.setCpf(cpf);
+    public Usuario criarUsuario(Usuario usuario){
+        validaCpf(usuario.getCpf());
         return usuario;
     }
 

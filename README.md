@@ -7,7 +7,9 @@ Usuário que vai fazer a votação na pauta
 - Adicionar validação do usuário utilizando email?
 
 ### Pauta
-Uma pauta que poderá ser votada pelo usuário
+Uma pauta que poderá ser ativada pelo administrador
+- A
 
 ### Voto Pauta
 Cada voto na pauta pelo usuário
+
