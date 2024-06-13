@@ -10,7 +10,6 @@ import lombok.Data;
 @Entity
 @Table
 public class Usuario {
-
     @Id
     @Column
     private String cpf;

@@ -13,12 +13,16 @@ public class PautaService {
     @Autowired
     private PautaRepository pautaRepository;
 
-    public List<Pauta> getAllPautas() {
+    public List<Pauta> findAll() {
         // Fazer uma pesquisa paginada?
         return pautaRepository.findAll();
     }
 
-    public Pauta createPauta(Pauta pauta) {
+    public Pauta find(Long id) {
+        return pautaRepository.findById(id).orElse(null);
+    }
+
+    public Pauta save(Pauta pauta) {
         pautaRepository.save(pauta);
         return pauta;
     }

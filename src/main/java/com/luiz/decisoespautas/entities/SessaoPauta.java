@@ -3,17 +3,20 @@ package com.luiz.decisoespautas.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
+import java.util.Date;
+
 @Entity
 @Table
-public class Pauta {
+@Data
+public class SessaoPauta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
-    private String titulo;
+    @ManyToOne
+    @JoinColumn(name = "id-pauta", nullable = false)
+    private Pauta pauta;
 
     @Column
-    private String descricao;
+    private Date tempoEmAberto;
 }
