@@ -15,7 +15,7 @@ public class PautaController {
     private PautaService pautaService;
 
     @PostMapping
-    public Pauta createPauta(@RequestBody Pauta pauta) {
+    public Pauta save(@RequestBody Pauta pauta) {
         return pautaService.save(pauta);
     }
 

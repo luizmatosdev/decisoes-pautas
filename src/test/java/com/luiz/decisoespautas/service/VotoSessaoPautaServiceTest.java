@@ -84,7 +84,7 @@ class VotoSessaoPautaServiceTest {
     @Test
     void testSave() {
         when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
-        when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(votoSessaoPauta.getId(), votoSessaoPauta.getCpf())).thenReturn(0);
+        when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(pauta.getId(), votoSessaoPauta.getCpf())).thenReturn(0);
         when(votoSessaoPautaRepository.save(votoSessaoPauta)).thenReturn(votoSessaoPauta);
 
         VotoSessaoPauta votoSessaoPautaTest = votoSessaoPautaService.save(votoSessaoPauta);
@@ -102,7 +102,7 @@ class VotoSessaoPautaServiceTest {
     @Test
     void testSaveUsuarioJaVotou() {
         when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
-        when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(votoSessaoPauta.getId(), votoSessaoPauta.getCpf())).thenReturn(1);
+        when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(pauta.getId(), votoSessaoPauta.getCpf())).thenReturn(1);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             votoSessaoPautaService.save(votoSessaoPauta);

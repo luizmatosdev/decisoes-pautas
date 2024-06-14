@@ -25,7 +25,6 @@ public class PautaService {
     }
 
     public Pauta save(Pauta pauta) {
-        find(pauta.getId());
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(pauta.getMinutosEmAberto() == null ? 1 : pauta.getMinutosEmAberto()));
         return pautaRepository.save(pauta);
     }

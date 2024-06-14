@@ -21,21 +21,20 @@ public class VotoSessaoPautaService {
     }
 
     public VotoSessaoPauta save(VotoSessaoPauta votoSessaoPauta) {
-        // Validar se Sessão da Pauta existe
         Pauta pauta = pautaService.find(votoSessaoPauta.getPauta().getId());
         validaSeSessaoEncerrada(pauta);
         votoSessaoPauta.setPauta(pauta);
 
         validaCpf(votoSessaoPauta.getCpf());
-        if (seUsuarioJaVotouNaSessao(votoSessaoPauta.getId(), votoSessaoPauta.getCpf())) {
-            throw new IllegalArgumentException("Usuário já votou na sessão da pauta");
-        }
+        validaSeUsuarioJaVotouNaSessao(votoSessaoPauta.getPauta().getId(), votoSessaoPauta.getCpf());
         return votoSessaoPautaRepository.save(votoSessaoPauta);
     }
 
-    private boolean seUsuarioJaVotouNaSessao(Long idPauta, String cpf) {
+    private void validaSeUsuarioJaVotouNaSessao(Long idPauta, String cpf) {
         int quantidadeVoto = votoSessaoPautaRepository.existeVotoUsuarioNaSessao(idPauta, cpf);
-        return quantidadeVoto != 0;
+        if (quantidadeVoto != 0) {
+            throw new IllegalArgumentException("Usuário já votou na sessão da pauta");
+        }
     }
 
     private void validaCpf(String cpf) {
