@@ -17,7 +17,7 @@ public class PautaService {
 
     public List<Pauta> findAll() {
         // Fazer uma pesquisa paginada?
-        return pautaRepository.findAll();
+        return pautaRepository.listaPautasComVotos();
     }
 
     public Pauta find(Long id) {
