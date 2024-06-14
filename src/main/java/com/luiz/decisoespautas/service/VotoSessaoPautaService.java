@@ -3,6 +3,7 @@ package com.luiz.decisoespautas.service;
 import com.luiz.decisoespautas.entities.Pauta;
 import com.luiz.decisoespautas.entities.VotoSessaoPauta;
 import com.luiz.decisoespautas.repositories.VotoSessaoPautaRepository;
+import com.luiz.decisoespautas.utils.ValidaCpf;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,7 +33,7 @@ public class VotoSessaoPautaService {
     }
 
     private void validaCpf(String cpf) {
-        if (cpf.length() != 11) {
+        if (!ValidaCpf.isCPF(cpf)) {
             throw new IllegalArgumentException("CPF inválido");
         }
     }
