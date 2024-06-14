@@ -42,7 +42,7 @@ class PautaServiceTest {
 
     @Test
     void testFindAll() {
-        when(pautaRepository.findAll()).thenReturn(List.of(pauta));
+        when(pautaRepository.listaPautasComVotos()).thenReturn(List.of(pauta));
         Pauta pautaTest = pautaService.findAll().getFirst();
         assertEquals(pauta.getId(), pautaTest.getId());
         assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
@@ -83,27 +83,27 @@ class PautaServiceTest {
     }
 
     @Test
-    void testPautaEmVotacao() {
+    void testPautaVotacaoEncerrada() {
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(2L));
         when(pautaRepository.findById(pauta.getId())).thenReturn(Optional.of(pauta));
         Long idPauta = pauta.getId();
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             pautaService.ativarVotacao(idPauta);
         });
-        String erroEsperado = "Pauta está em votação";
+        String erroEsperado = "Pauta encerrada";
         String erro = exception.getMessage();
         assertEquals(erroEsperado, erro);
     }
 
     @Test
-    void testPautaVotacaoEncerrada() {
+    void testPautaEmVotacao() {
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(30L));
         when(pautaRepository.findById(pauta.getId())).thenReturn(Optional.of(pauta));
         Long idPauta = pauta.getId();
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             pautaService.ativarVotacao(idPauta);
         });
-        String erroEsperado = "Pauta encerrada";
+        String erroEsperado = "Pauta está em votação";
         String erro = exception.getMessage();
         assertEquals(erroEsperado, erro);
     }

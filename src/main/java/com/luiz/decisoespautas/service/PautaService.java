@@ -17,7 +17,7 @@ public class PautaService {
 
     public List<Pauta> findAll() {
         // Fazer uma pesquisa paginada?
-        return pautaRepository.findAll();
+        return pautaRepository.listaPautasComVotos();
     }
 
     public Pauta find(Long id) {
@@ -31,7 +31,7 @@ public class PautaService {
     public void ativarVotacao(Long id) {
         Pauta pauta = find(id);
         if (pauta.getTempoLimiteEmAberto() != null) {
-            if (pauta.getTempoLimiteEmAberto().isBefore(LocalDateTime.now())) {
+            if (pauta.getTempoLimiteEmAberto().isAfter(LocalDateTime.now())) {
                 throw new IllegalArgumentException("Pauta está em votação");
             } else {
                 throw new IllegalArgumentException("Pauta encerrada");
