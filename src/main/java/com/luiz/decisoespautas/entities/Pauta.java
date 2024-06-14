@@ -3,6 +3,8 @@ package com.luiz.decisoespautas.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Entity
 @Table
@@ -16,4 +18,10 @@ public class Pauta {
 
     @Column
     private String descricao;
+
+    @Column
+    private LocalDateTime tempoLimiteEmAberto;
+
+    @Transient
+    private Long minutosEmAberto;
 }

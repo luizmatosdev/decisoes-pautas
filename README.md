@@ -12,8 +12,14 @@ Usuário que vai fazer a votação na pauta
 Uma pauta que poderá ser ativada pelo administrador
 - A
 
+### Sessão pauta
+A sessão é
+Cada Pauta pode ter uma ou mais sessões
+
 ### Voto Pauta
 Cada voto na pauta pelo usuário
+
+
 
 # Futuro
 - Adicionar validação de email do CPF?

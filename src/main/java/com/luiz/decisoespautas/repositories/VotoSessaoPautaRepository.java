@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface VotoSessaoPautaRepository extends JpaRepository<VotoSessaoPauta, Long> {
-    @Query("SELECT count(*) FROM VotoSessaoPauta V WHERE V.sessaoPauta.id = ?1 AND V.usuario.cpf = ?2")
-    public int existeVotoUsuarioNaSessao(Long idSessaoPauta, String cpf);
+    @Query("SELECT count(*) FROM VotoSessaoPauta V WHERE V.id = ?1 AND V.cpf = ?2")
+    int existeVotoUsuarioNaSessao(Long idPauta, String cpf);
 }
