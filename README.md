@@ -2,6 +2,10 @@ Utilizando SONARLINT para melhorar a qualidade e desempenho do código
 
 Todas as alterações na estrutura do banco de dados é feita pelo Hibernate
 
+Link para o Swagger: http://localhost:8080/v2/api-docs
+
+## Tecnologias/Framework
+
 ## Entidades do banco de dados
 
 ### Pauta
@@ -16,3 +20,4 @@ Cada voto na pauta pelo usuário
 ## Futuro
 - Adicionar validação de email do CPF?
 - Adicionar uma forma de resetar a votação?
+- Utilizar Migrations?

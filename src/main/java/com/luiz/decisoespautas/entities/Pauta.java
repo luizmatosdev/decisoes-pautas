@@ -1,6 +1,7 @@
 package com.luiz.decisoespautas.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,9 +15,10 @@ public class Pauta {
     private Long id;
 
     @Column
+    @Size(max = 255)
     private String titulo;
 
-    @Column
+    @Column(columnDefinition = "text")
     private String descricao;
 
     @Column
