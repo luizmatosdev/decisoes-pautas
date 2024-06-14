@@ -72,7 +72,6 @@ class PautaServiceTest {
     @Test
     void testSave() {
         when(pautaRepository.save(pauta)).thenReturn(pauta);
-        when(pautaRepository.findById(pauta.getId())).thenReturn(Optional.of(pauta));
         Pauta pautaTest = pautaService.save(pauta);
         assertEquals(pauta.getId(), pautaTest.getId());
         assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
