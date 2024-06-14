@@ -1,8 +1,6 @@
 package com.luiz.decisoespautas.service;
 
 import com.luiz.decisoespautas.entities.Pauta;
-import com.luiz.decisoespautas.entities.SessaoPauta;
-import com.luiz.decisoespautas.entities.Usuario;
 import com.luiz.decisoespautas.entities.VotoSessaoPauta;
 import com.luiz.decisoespautas.repositories.VotoSessaoPautaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -26,8 +24,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class VotoSessaoPautaServiceTest {
 
-    Usuario usuario;
-    SessaoPauta sessaoPauta;
     Pauta pauta;
     VotoSessaoPauta votoSessaoPauta;
 
@@ -36,31 +32,22 @@ class VotoSessaoPautaServiceTest {
     @Mock
     private VotoSessaoPautaRepository votoSessaoPautaRepository;
     @Mock
-    private SessaoPautaService sessaoPautaService;
-    @Mock
-    private UsuarioService usuarioService;
+    private PautaService pautaService;
 
     @BeforeEach
     void setUp() {
-        usuario = new Usuario();
-        usuario.setCpf("01234567890");
-
         pauta = new Pauta();
         pauta.setId(1L);
         pauta.setTitulo("Titulo");
         pauta.setDescricao("Descrição");
-
-        sessaoPauta = new SessaoPauta();
-        sessaoPauta.setId(2L);
-        sessaoPauta.setPauta(pauta);
-        sessaoPauta.setMinutosEmAberto(10L);
-        sessaoPauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(10));
+        pauta.setMinutosEmAberto(10L);
+        pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(10));
 
         votoSessaoPauta = new VotoSessaoPauta();
         votoSessaoPauta.setId(5L);
         votoSessaoPauta.setVotoPositivo(true);
-        votoSessaoPauta.setUsuario(usuario);
-        votoSessaoPauta.setSessaoPauta(sessaoPauta);
+        votoSessaoPauta.setCpf("01234567890");
+        votoSessaoPauta.setPauta(pauta);
 
         MockitoAnnotations.openMocks(this);
     }
@@ -72,17 +59,12 @@ class VotoSessaoPautaServiceTest {
 
         assertEquals(votoSessaoPauta.getId(), votoSessaoPautaTest.getId());
         assertEquals(votoSessaoPauta.getVotoPositivo(), votoSessaoPautaTest.getVotoPositivo());
+        assertEquals(votoSessaoPauta.getCpf(), votoSessaoPautaTest.getCpf());
 
-        SessaoPauta sessaoPautaTest = votoSessaoPautaTest.getSessaoPauta();
-        assertEquals(sessaoPauta.getId(), sessaoPautaTest.getId());
-
-        Pauta pautaTest = sessaoPautaTest.getPauta();
+        Pauta pautaTest = votoSessaoPautaTest.getPauta();
         assertEquals(pauta.getId(), pautaTest.getId());
         assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
         assertEquals(pauta.getDescricao(), pautaTest.getDescricao());
-
-        Usuario usuarioFind = votoSessaoPauta.getUsuario();
-        assertEquals(usuario.getCpf(), usuarioFind.getCpf());
     }
 
 
@@ -101,32 +83,26 @@ class VotoSessaoPautaServiceTest {
 
     @Test
     void testSave() {
-        when(sessaoPautaService.find(votoSessaoPauta.getSessaoPauta().getId())).thenReturn(sessaoPauta);
-        when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(sessaoPauta.getId(), usuario.getCpf())).thenReturn(0);
+        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
+        when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(votoSessaoPauta.getId(), votoSessaoPauta.getCpf())).thenReturn(0);
         when(votoSessaoPautaRepository.save(votoSessaoPauta)).thenReturn(votoSessaoPauta);
 
         VotoSessaoPauta votoSessaoPautaTest = votoSessaoPautaService.save(votoSessaoPauta);
 
         assertEquals(votoSessaoPauta.getId(), votoSessaoPautaTest.getId());
         assertEquals(votoSessaoPauta.getVotoPositivo(), votoSessaoPautaTest.getVotoPositivo());
+        assertEquals(votoSessaoPauta.getCpf(), votoSessaoPautaTest.getCpf());
 
-        SessaoPauta sessaoPautaTest = votoSessaoPautaTest.getSessaoPauta();
-        assertEquals(sessaoPauta.getId(), sessaoPautaTest.getId());
-
-        Pauta pautaTest = sessaoPautaTest.getPauta();
+        Pauta pautaTest = votoSessaoPautaTest.getPauta();
         assertEquals(pauta.getId(), pautaTest.getId());
         assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
         assertEquals(pauta.getDescricao(), pautaTest.getDescricao());
-
-        Usuario usuarioFind = votoSessaoPauta.getUsuario();
-        assertEquals(usuario.getCpf(), usuarioFind.getCpf());
-
     }
 
     @Test
     void testSaveUsuarioJaVotou() {
-        when(sessaoPautaService.find(votoSessaoPauta.getSessaoPauta().getId())).thenReturn(sessaoPauta);
-        when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(sessaoPauta.getId(), usuario.getCpf())).thenReturn(1);
+        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
+        when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(votoSessaoPauta.getId(), votoSessaoPauta.getCpf())).thenReturn(1);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             votoSessaoPautaService.save(votoSessaoPauta);
@@ -140,8 +116,8 @@ class VotoSessaoPautaServiceTest {
 
     @Test
     void testSaveTempoLimiteEsgotado() {
-        sessaoPauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(30));
-        when(sessaoPautaService.find(votoSessaoPauta.getSessaoPauta().getId())).thenReturn(sessaoPauta);
+        pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(30));
+        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             votoSessaoPautaService.save(votoSessaoPauta);

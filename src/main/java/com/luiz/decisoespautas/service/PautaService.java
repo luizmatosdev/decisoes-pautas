@@ -6,6 +6,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -24,6 +25,8 @@ public class PautaService {
     }
 
     public Pauta save(Pauta pauta) {
+        find(pauta.getId());
+        pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(pauta.getMinutosEmAberto() == null ? 1 : pauta.getMinutosEmAberto()));
         return pautaRepository.save(pauta);
     }
 }
