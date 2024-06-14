@@ -31,16 +31,16 @@ public class VotoSessaoPautaService {
         return votoSessaoPautaRepository.save(votoSessaoPauta);
     }
 
+    private void validaCpf(String cpf) {
+        if (cpf.length() != 11) {
+            throw new IllegalArgumentException("CPF inválido");
+        }
+    }
+
     private void validaSeUsuarioJaVotouNaSessao(Long idPauta, String cpf) {
         int quantidadeVoto = votoSessaoPautaRepository.existeVotoUsuarioNaSessao(idPauta, cpf);
         if (quantidadeVoto != 0) {
             throw new IllegalArgumentException("Usuário já votou nesta pauta");
-        }
-    }
-
-    private void validaCpf(String cpf) {
-        if (cpf.length() != 11) {
-            throw new IllegalArgumentException("CPF inválido");
         }
     }
 

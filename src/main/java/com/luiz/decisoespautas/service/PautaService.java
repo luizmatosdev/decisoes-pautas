@@ -34,7 +34,7 @@ public class PautaService {
             if (pauta.getTempoLimiteEmAberto().isBefore(LocalDateTime.now())) {
                 throw new IllegalArgumentException("Pauta está em votação");
             } else {
-                throw new IllegalArgumentException("Pauta já encerrada");
+                throw new IllegalArgumentException("Pauta encerrada");
             }
         }
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(pauta.getMinutosEmAberto() == null ? 1 : pauta.getMinutosEmAberto()));

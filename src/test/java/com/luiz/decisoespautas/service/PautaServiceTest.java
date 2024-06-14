@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,44 @@ class PautaServiceTest {
             pautaService.find(idPauta);
         });
         String erroEsperado = "Pauta não encontrada";
+        String erro = exception.getMessage();
+        assertEquals(erroEsperado, erro);
+    }
+
+    @Test
+    void testPautaNaoExiste() {
+        when(pautaRepository.findById(pauta.getId())).thenReturn(Optional.empty());
+        Long idPauta = pauta.getId();
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            pautaService.ativarVotacao(idPauta);
+        });
+        String erroEsperado = "Pauta não encontrada";
+        String erro = exception.getMessage();
+        assertEquals(erroEsperado, erro);
+    }
+
+    @Test
+    void testPautaEmVotacao() {
+        pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(2L));
+        when(pautaRepository.findById(pauta.getId())).thenReturn(Optional.of(pauta));
+        Long idPauta = pauta.getId();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            pautaService.ativarVotacao(idPauta);
+        });
+        String erroEsperado = "Pauta está em votação";
+        String erro = exception.getMessage();
+        assertEquals(erroEsperado, erro);
+    }
+
+    @Test
+    void testPautaVotacaoEncerrada() {
+        pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(30L));
+        when(pautaRepository.findById(pauta.getId())).thenReturn(Optional.of(pauta));
+        Long idPauta = pauta.getId();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            pautaService.ativarVotacao(idPauta);
+        });
+        String erroEsperado = "Pauta encerrada";
         String erro = exception.getMessage();
         assertEquals(erroEsperado, erro);
     }

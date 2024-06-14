@@ -100,6 +100,20 @@ class VotoSessaoPautaServiceTest {
     }
 
     @Test
+    void testSaveCpfInvalido() {
+        votoSessaoPauta.setCpf("invalido");
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            votoSessaoPautaService.save(votoSessaoPauta);
+        });
+
+        String erroEsperado = "CPF inválido";
+        String erro = exception.getMessage();
+
+        assertEquals(erroEsperado, erro);
+    }
+
+    @Test
     void testSaveUsuarioJaVotou() {
         when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
         when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(pauta.getId(), votoSessaoPauta.getCpf())).thenReturn(1);
@@ -108,7 +122,22 @@ class VotoSessaoPautaServiceTest {
             votoSessaoPautaService.save(votoSessaoPauta);
         });
 
-        String erroEsperado = "Usuário já votou na sessão da pauta";
+        String erroEsperado = "Usuário já votou nesta pauta";
+        String erro = exception.getMessage();
+
+        assertEquals(erroEsperado, erro);
+    }
+
+    @Test
+    void testSaveVotoPautaNaoIniciada() {
+        pauta.setTempoLimiteEmAberto(null);
+        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            votoSessaoPautaService.save(votoSessaoPauta);
+        });
+
+        String erroEsperado = "Pauta não iniciada";
         String erro = exception.getMessage();
 
         assertEquals(erroEsperado, erro);
@@ -123,7 +152,7 @@ class VotoSessaoPautaServiceTest {
             votoSessaoPautaService.save(votoSessaoPauta);
         });
 
-        String erroEsperado = "Sessão encerrada";
+        String erroEsperado = "Pauta encerrada";
         String erro = exception.getMessage();
 
         assertEquals(erroEsperado, erro);
