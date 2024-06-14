@@ -25,7 +25,19 @@ public class PautaService {
     }
 
     public Pauta save(Pauta pauta) {
-        pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(pauta.getMinutosEmAberto() == null ? 1 : pauta.getMinutosEmAberto()));
         return pautaRepository.save(pauta);
+    }
+
+    public void ativarVotacao(Long id) {
+        Pauta pauta = find(id);
+        if (pauta.getTempoLimiteEmAberto() != null) {
+            if (pauta.getTempoLimiteEmAberto().isBefore(LocalDateTime.now())) {
+                throw new IllegalArgumentException("Pauta está em votação");
+            } else {
+                throw new IllegalArgumentException("Pauta já encerrada");
+            }
+        }
+        pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(pauta.getMinutosEmAberto() == null ? 1 : pauta.getMinutosEmAberto()));
+        pautaRepository.save(pauta);
     }
 }

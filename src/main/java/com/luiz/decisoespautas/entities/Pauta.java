@@ -22,6 +22,6 @@ public class Pauta {
     @Column
     private LocalDateTime tempoLimiteEmAberto;
 
-    @Transient
+    @Column
     private Long minutosEmAberto;
 }

@@ -21,11 +21,12 @@ public class VotoSessaoPautaService {
     }
 
     public VotoSessaoPauta save(VotoSessaoPauta votoSessaoPauta) {
+        validaCpf(votoSessaoPauta.getCpf());
+
         Pauta pauta = pautaService.find(votoSessaoPauta.getPauta().getId());
-        validaSeSessaoEncerrada(pauta);
+        validaPauta(pauta);
         votoSessaoPauta.setPauta(pauta);
 
-        validaCpf(votoSessaoPauta.getCpf());
         validaSeUsuarioJaVotouNaSessao(votoSessaoPauta.getPauta().getId(), votoSessaoPauta.getCpf());
         return votoSessaoPautaRepository.save(votoSessaoPauta);
     }
@@ -33,7 +34,7 @@ public class VotoSessaoPautaService {
     private void validaSeUsuarioJaVotouNaSessao(Long idPauta, String cpf) {
         int quantidadeVoto = votoSessaoPautaRepository.existeVotoUsuarioNaSessao(idPauta, cpf);
         if (quantidadeVoto != 0) {
-            throw new IllegalArgumentException("Usuário já votou na sessão da pauta");
+            throw new IllegalArgumentException("Usuário já votou nesta pauta");
         }
     }
 
@@ -43,9 +44,20 @@ public class VotoSessaoPautaService {
         }
     }
 
-    private void validaSeSessaoEncerrada(Pauta pauta) {
+    private void validaPauta(Pauta pauta) {
+        validaSePautaNaoIniciada(pauta);
+        validaSePautaEncerrada(pauta);
+    }
+
+    private void validaSePautaNaoIniciada(Pauta pauta) {
+        if (pauta.getTempoLimiteEmAberto() == null) {
+            throw new IllegalArgumentException("Pauta não iniciada");
+        }
+    }
+
+    private void validaSePautaEncerrada(Pauta pauta) {
         if (pauta.getTempoLimiteEmAberto().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Sessão encerrada");
+            throw new IllegalArgumentException("Pauta encerrada");
         }
     }
 }
