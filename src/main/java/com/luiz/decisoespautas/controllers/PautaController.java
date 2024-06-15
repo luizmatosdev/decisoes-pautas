@@ -1,5 +1,6 @@
 package com.luiz.decisoespautas.controllers;
 
+import com.luiz.decisoespautas.dtos.CancelamentoPautaRequestDTO;
 import com.luiz.decisoespautas.entities.Pauta;
 import com.luiz.decisoespautas.service.PautaService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,8 +21,14 @@ public class PautaController {
 
     @Operation(summary = "Lista todas as pautas")
     @GetMapping
-    public List<Pauta> getAllPautas() {
-        return pautaService.findAll();
+    public List<Pauta> listar() {
+        return pautaService.listar();
+    }
+
+    @Operation(summary = "Lista todas as pautas")
+    @GetMapping("/{id}")
+    public Pauta getAllPautas(@PathVariable("id") Long id) {
+        return pautaService.encontraPorId(id);
     }
 
     @Operation(summary = "Salva informações de uma pauta")
@@ -30,11 +37,15 @@ public class PautaController {
         return pautaService.save(pauta);
     }
 
+    @Operation(summary = "Cancela uma pauta")
+    @PostMapping("/cancelamento")
+    public void cancelarPauta(@RequestBody CancelamentoPautaRequestDTO cancelamentoPautaRequestDTO) {
+        pautaService.cancelarPauta(cancelamentoPautaRequestDTO.getId(), cancelamentoPautaRequestDTO.getMotivoCancelamento());
+    }
+
     @Operation(summary = "Habilita a votação de uma pauta")
-    @PatchMapping
+    @PatchMapping()
     public void ativarVotacao(@PathParam("id") Long id) {
         pautaService.ativarVotacao(id);
     }
-
-    // resetar uma votação de pauta?
 }

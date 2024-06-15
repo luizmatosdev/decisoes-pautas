@@ -29,13 +29,29 @@ public class Pauta {
     @Column
     private Long minutosEmAberto;
 
+    @Column(nullable = false)
+    private boolean isCancelado = false;
+
+    @Column(columnDefinition = "text")
+    private String motivoCancelamento;
+
     @Transient
     private Long votosSim;
 
     @Transient
     private Long votosNao;
 
-    public Pauta(Long id, java.lang.@jakarta.validation.constraints.Size(max = 255) String titulo, String descricao, LocalDateTime tempoLimiteEmAberto, Long minutosEmAberto, Long votosSim, Long votosNao) {
+    public Pauta(
+        Long id,
+        String titulo,
+        String descricao,
+        LocalDateTime tempoLimiteEmAberto,
+        Long minutosEmAberto,
+        boolean isCancelado,
+        String motivoCancelamento,
+        Long votosSim,
+        Long votosNao
+    ) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -43,5 +59,7 @@ public class Pauta {
         this.minutosEmAberto = minutosEmAberto;
         this.votosSim = votosSim;
         this.votosNao = votosNao;
+        this.isCancelado = isCancelado;
+        this.motivoCancelamento = motivoCancelamento;
     }
 }

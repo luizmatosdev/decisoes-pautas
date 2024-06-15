@@ -53,7 +53,7 @@ class PerformanceVotoSessaoPautaTest {
     @Timeout(value = 100, unit = TimeUnit.MILLISECONDS)
     void testPerformanceVotoSessaoPauta() {
 
-        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
+        when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
         when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(pauta.getId(), votoSessaoPauta.getCpf())).thenReturn(0);
         when(votoSessaoPautaRepository.save(any(VotoSessaoPauta.class))).thenReturn(null);
 
