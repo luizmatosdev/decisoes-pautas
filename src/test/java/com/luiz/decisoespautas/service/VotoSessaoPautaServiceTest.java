@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 class VotoSessaoPautaServiceTest {
 
     Pauta pauta;
+    Pauta pautaCancelada;
     VotoSessaoPauta votoSessaoPauta;
 
     @InjectMocks
@@ -43,6 +44,13 @@ class VotoSessaoPautaServiceTest {
         pauta.setMinutosEmAberto(10L);
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(10));
 
+
+        pautaCancelada = new Pauta();
+        pautaCancelada.setId(2L);
+        pautaCancelada.setTitulo("Titulo Cancelada");
+        pautaCancelada.setDescricao("Descrição Cancelada");
+        pautaCancelada.setCancelado(true);
+
         votoSessaoPauta = new VotoSessaoPauta();
         votoSessaoPauta.setId(5L);
         votoSessaoPauta.setVotoPositivo(true);
@@ -53,9 +61,9 @@ class VotoSessaoPautaServiceTest {
     }
 
     @Test
-    void testFind() {
+    void testEncontraPorId() {
         when(votoSessaoPautaRepository.findById(votoSessaoPauta.getId())).thenReturn(Optional.of(votoSessaoPauta));
-        VotoSessaoPauta votoSessaoPautaTest = votoSessaoPautaService.find(votoSessaoPauta.getId());
+        VotoSessaoPauta votoSessaoPautaTest = votoSessaoPautaService.encontraPorId(votoSessaoPauta.getId());
 
         assertEquals(votoSessaoPauta.getId(), votoSessaoPautaTest.getId());
         assertEquals(votoSessaoPauta.getVotoPositivo(), votoSessaoPautaTest.getVotoPositivo());
@@ -69,21 +77,21 @@ class VotoSessaoPautaServiceTest {
 
 
     @Test
-    void testFindNotFound() {
+    void testEncontraPorIdNotFound() {
         when(votoSessaoPautaRepository.findById(votoSessaoPauta.getId())).thenReturn(Optional.empty());
         Long idPauta = votoSessaoPauta.getId();
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
-            votoSessaoPautaService.find(idPauta);
+            votoSessaoPautaService.encontraPorId(idPauta);
         });
 
-        String erroEsperado = "Voto não encontrado";
+        String erroEsperado = "Voto não encontrado.";
         String erro = exception.getMessage();
         assertEquals(erroEsperado, erro);
     }
 
     @Test
     void testSave() {
-        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
+        when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
         when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(pauta.getId(), votoSessaoPauta.getCpf())).thenReturn(0);
         when(votoSessaoPautaRepository.save(votoSessaoPauta)).thenReturn(votoSessaoPauta);
 
@@ -107,7 +115,7 @@ class VotoSessaoPautaServiceTest {
             votoSessaoPautaService.save(votoSessaoPauta);
         });
 
-        String erroEsperado = "CPF inválido";
+        String erroEsperado = "CPF inválido.";
         String erro = exception.getMessage();
 
         assertEquals(erroEsperado, erro);
@@ -115,14 +123,29 @@ class VotoSessaoPautaServiceTest {
 
     @Test
     void testSaveUsuarioJaVotou() {
-        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
+        when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
         when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(pauta.getId(), votoSessaoPauta.getCpf())).thenReturn(1);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             votoSessaoPautaService.save(votoSessaoPauta);
         });
 
-        String erroEsperado = "Usuário já votou nesta pauta";
+        String erroEsperado = "Usuário já votou nesta pauta.";
+        String erro = exception.getMessage();
+
+        assertEquals(erroEsperado, erro);
+    }
+
+    @Test
+    void testSavePautaCancelada() {
+        pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(30));
+        when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pautaCancelada);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            votoSessaoPautaService.save(votoSessaoPauta);
+        });
+
+        String erroEsperado = "Pauta cancelada.";
         String erro = exception.getMessage();
 
         assertEquals(erroEsperado, erro);
@@ -131,13 +154,13 @@ class VotoSessaoPautaServiceTest {
     @Test
     void testSaveVotoPautaNaoIniciada() {
         pauta.setTempoLimiteEmAberto(null);
-        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
+        when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             votoSessaoPautaService.save(votoSessaoPauta);
         });
 
-        String erroEsperado = "Pauta não iniciada";
+        String erroEsperado = "Pauta não iniciada.";
         String erro = exception.getMessage();
 
         assertEquals(erroEsperado, erro);
@@ -146,13 +169,13 @@ class VotoSessaoPautaServiceTest {
     @Test
     void testSaveTempoLimiteEsgotado() {
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(30));
-        when(pautaService.find(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
+        when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             votoSessaoPautaService.save(votoSessaoPauta);
         });
 
-        String erroEsperado = "Pauta encerrada";
+        String erroEsperado = "Pauta encerrada.";
         String erro = exception.getMessage();
 
         assertEquals(erroEsperado, erro);

@@ -18,7 +18,7 @@ public class VotoSessaoPautaController {
     @Operation(summary = "Encontra um voto pelo id")
     @GetMapping
     public VotoSessaoPauta find(@PathParam("id") Long id) {
-        return votoSessaoPautaService.find(id);
+        return votoSessaoPautaService.encontraPorId(id);
     }
 
     @Operation(summary = "Salva um voto de uma pauta")
