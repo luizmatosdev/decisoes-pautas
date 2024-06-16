@@ -7,11 +7,9 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
-        show_sql: false
-        hbm2ddl:
-          auto: create-drop
+        show_sql: true
     generate-ddl: true
     open-in-view: false

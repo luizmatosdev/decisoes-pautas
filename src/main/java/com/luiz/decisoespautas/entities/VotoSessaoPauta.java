@@ -14,10 +14,10 @@ public class VotoSessaoPauta {
     @Column
     private Boolean votoPositivo;
 
-    @Column
+    @Column(length = 11)
     private String cpf;
 
     @ManyToOne
-    @JoinColumn(name = "id-pauta", nullable = false)
+    @JoinColumn(name = "id_pauta", nullable = false)
     private Pauta pauta;
 }

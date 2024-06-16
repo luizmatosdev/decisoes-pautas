@@ -1,23 +1,30 @@
-Utilizando SONARLINT para melhorar a qualidade e desempenho do código
-
-Todas as alterações na estrutura do banco de dados é feita pelo Hibernate
-
-Link para o Swagger: http://localhost:8080/v2/api-docs
+# Decisões Pautas
 
 ## Tecnologias/Framework
 
+- [Swagger](https://swagger.io/) - Para acessar documentação, utilize o link http://localhost:8080/v2/api-docs com o servidor rodando
+- [JPA] - A estratégia do gerenciamento das alterações no banco de dados foi "update", onde todas as alterações no código será feita no banco
+- [PostgreSQL](https://www.postgresql.org/) - Utilizei banco de dados SQL
+- [Postman](https://www.postman.com/) - Utilizei para testar manualmente a aplicação, link para Collection: https://documenter.getpostman.com/view/12044113/2sA3XQi2sc#4d33dc8e-6ffa-45ac-a444-dd130d59b0e4
+
 ## Entidades do banco de dados
 
+![Esquema do banco de dados](img/esquema-banco.png)
+
 ### Pauta
-Uma pauta que poderá ser ativada pelo administrador
-Usuário que vai fazer a votação na pauta
-- Decidi utulizar o CPF do usuário como chave única para saber se o mesmo usuário fez a votação naquela pauta
-- Adicionar validação do usuário utilizando email?
+Uma Pauta é criada com título e descrição e o tempo em que ele ficará aberto
+A Pauta deve ser iniciada para que a votação seja liberada
+Uma Pauta pode ser cancelada e perderá completamente toda sua funcionalidade
 
 ### Voto Pauta
 Cada voto na pauta pelo usuário
 
 ## Futuro
+- Adicionar visualização em tempo real da contagem de votos
 - Adicionar validação de email do CPF?
 - Adicionar uma forma de resetar a votação?
+- Adicionar mensageria para melhorar a performance das votações(Kafka/MongoDB)?
 - Utilizar Migrations?
+
+## Observações
+- Para a tarefa bônus 1(Utilizar API externa), a API externa não funciona mais.
