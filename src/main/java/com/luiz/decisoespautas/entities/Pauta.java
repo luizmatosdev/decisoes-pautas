@@ -16,11 +16,11 @@ public class Pauta {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     @Size(max = 255)
     private String titulo;
 
-    @Column(columnDefinition = "text")
+    @Column(nullable = false ,columnDefinition = "text")
     private String descricao;
 
     @Column

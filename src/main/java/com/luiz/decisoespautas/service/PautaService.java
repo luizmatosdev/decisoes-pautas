@@ -25,6 +25,9 @@ public class PautaService {
     }
 
     public Pauta save(Pauta pauta) {
+        if (pauta.getTitulo() == null || pauta.getDescricao() == null) {
+            throw new IllegalArgumentException("Pauta deve conter um título e descrição");
+        }
         return pautaRepository.save(pauta);
     }
 
