@@ -17,7 +17,7 @@ public class ResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleException(Exception e) {
-        logger.error(e.getMessage());
+        logger.error(e);
         ExceptionResponse exception = new ExceptionResponse("Erro interno");
         return new ResponseEntity<>(exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
