@@ -30,8 +30,7 @@ Cada voto na pauta pelo usuário.
 
 ## Futuro
 - Adicionar visualização em tempo real da contagem de votos
-- Adicionar validação de email do CPF?
-- Adicionar uma forma de resetar a votação?
+- Adicionar validação de email do CPF?]
 - Adicionar mensageria para melhorar a performance das votações(Kafka/MongoDB)?
 - Utilizar Migrations?
 
