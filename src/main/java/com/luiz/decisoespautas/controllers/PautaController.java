@@ -1,13 +1,19 @@
 package com.luiz.decisoespautas.controllers;
 
-import com.luiz.decisoespautas.dtos.CancelamentoPautaRequestDTO;
-import com.luiz.decisoespautas.entities.Pauta;
+import com.luiz.decisoespautas.dtos.v1.CancelamentoPautaRequestDTO;
+import com.luiz.decisoespautas.dtos.v1.PautaRequestDTO;
 import com.luiz.decisoespautas.service.PautaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -21,20 +27,20 @@ public class PautaController {
 
     @Operation(summary = "Lista todas as pautas")
     @GetMapping
-    public List<Pauta> listar() {
+    public List<PautaRequestDTO> listar() {
         return pautaService.listar();
     }
 
     @Operation(summary = "Lista todas as pautas")
     @GetMapping("/{id}")
-    public Pauta getAllPautas(@PathVariable("id") Long id) {
+    public PautaRequestDTO getAllPautas(@PathVariable("id") Long id) {
         return pautaService.encontraPorId(id);
     }
 
     @Operation(summary = "Salva informações de uma pauta")
     @PostMapping
-    public Pauta save(@RequestBody Pauta pauta) {
-        return pautaService.save(pauta);
+    public PautaRequestDTO save(@RequestBody PautaRequestDTO pauta) {
+        return pautaService.salvar(pauta);
     }
 
     @Operation(summary = "Cancela uma pauta")

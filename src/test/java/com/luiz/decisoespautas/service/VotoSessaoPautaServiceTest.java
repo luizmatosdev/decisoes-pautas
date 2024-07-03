@@ -1,6 +1,8 @@
 package com.luiz.decisoespautas.service;
 
-import com.luiz.decisoespautas.entities.Pauta;
+import com.luiz.decisoespautas.dtos.v1.PautaRequestDTO;
+import com.luiz.decisoespautas.dtos.v1.VotoSessaoPautaRequestDTO;
+import com.luiz.decisoespautas.dtos.v1.mappers.VotoSessaoPautaMapper;
 import com.luiz.decisoespautas.entities.VotoSessaoPauta;
 import com.luiz.decisoespautas.repositories.VotoSessaoPautaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -18,15 +20,16 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 class VotoSessaoPautaServiceTest {
 
-    Pauta pauta;
-    Pauta pautaCancelada;
-    VotoSessaoPauta votoSessaoPauta;
+    PautaRequestDTO pauta;
+    PautaRequestDTO pautaCancelada;
+    VotoSessaoPautaRequestDTO votoSessaoPauta;
 
     @InjectMocks
     private VotoSessaoPautaService votoSessaoPautaService;
@@ -37,7 +40,7 @@ class VotoSessaoPautaServiceTest {
 
     @BeforeEach
     void setUp() {
-        pauta = new Pauta();
+        pauta = new PautaRequestDTO();
         pauta.setId(1L);
         pauta.setTitulo("Titulo");
         pauta.setDescricao("Descrição");
@@ -45,13 +48,13 @@ class VotoSessaoPautaServiceTest {
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(10));
 
 
-        pautaCancelada = new Pauta();
+        pautaCancelada = new PautaRequestDTO();
         pautaCancelada.setId(2L);
         pautaCancelada.setTitulo("Titulo Cancelada");
         pautaCancelada.setDescricao("Descrição Cancelada");
         pautaCancelada.setCancelado(true);
 
-        votoSessaoPauta = new VotoSessaoPauta();
+        votoSessaoPauta = new VotoSessaoPautaRequestDTO();
         votoSessaoPauta.setId(5L);
         votoSessaoPauta.setVotoPositivo(true);
         votoSessaoPauta.setCpf("01234567890");
@@ -62,14 +65,14 @@ class VotoSessaoPautaServiceTest {
 
     @Test
     void testEncontraPorId() {
-        when(votoSessaoPautaRepository.findById(votoSessaoPauta.getId())).thenReturn(Optional.of(votoSessaoPauta));
-        VotoSessaoPauta votoSessaoPautaTest = votoSessaoPautaService.encontraPorId(votoSessaoPauta.getId());
+        when(votoSessaoPautaRepository.findById(votoSessaoPauta.getId())).thenReturn(Optional.of(VotoSessaoPautaMapper.parseVotoSessaoPauta(votoSessaoPauta)));
+        VotoSessaoPautaRequestDTO votoSessaoPautaTest = votoSessaoPautaService.encontraPorId(votoSessaoPauta.getId());
 
         assertEquals(votoSessaoPauta.getId(), votoSessaoPautaTest.getId());
         assertEquals(votoSessaoPauta.getVotoPositivo(), votoSessaoPautaTest.getVotoPositivo());
         assertEquals(votoSessaoPauta.getCpf(), votoSessaoPautaTest.getCpf());
 
-        Pauta pautaTest = votoSessaoPautaTest.getPauta();
+        PautaRequestDTO pautaTest = votoSessaoPautaTest.getPauta();
         assertEquals(pauta.getId(), pautaTest.getId());
         assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
         assertEquals(pauta.getDescricao(), pautaTest.getDescricao());
@@ -90,25 +93,25 @@ class VotoSessaoPautaServiceTest {
     }
 
     @Test
-    void testSave() {
+    void testSalvar() {
         when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
         when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(pauta.getId(), votoSessaoPauta.getCpf())).thenReturn(0);
-        when(votoSessaoPautaRepository.save(votoSessaoPauta)).thenReturn(votoSessaoPauta);
+        when(votoSessaoPautaRepository.save(any(VotoSessaoPauta.class))).thenReturn(VotoSessaoPautaMapper.parseVotoSessaoPauta(votoSessaoPauta));
 
-        VotoSessaoPauta votoSessaoPautaTest = votoSessaoPautaService.save(votoSessaoPauta);
+        VotoSessaoPautaRequestDTO votoSessaoPautaTest = votoSessaoPautaService.save(votoSessaoPauta);
 
         assertEquals(votoSessaoPauta.getId(), votoSessaoPautaTest.getId());
         assertEquals(votoSessaoPauta.getVotoPositivo(), votoSessaoPautaTest.getVotoPositivo());
         assertEquals(votoSessaoPauta.getCpf(), votoSessaoPautaTest.getCpf());
 
-        Pauta pautaTest = votoSessaoPautaTest.getPauta();
+        PautaRequestDTO pautaTest = votoSessaoPautaTest.getPauta();
         assertEquals(pauta.getId(), pautaTest.getId());
         assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
         assertEquals(pauta.getDescricao(), pautaTest.getDescricao());
     }
 
     @Test
-    void testSaveCpfInvalido() {
+    void testSalvarCpfInvalido() {
         votoSessaoPauta.setCpf("invalido");
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
@@ -122,7 +125,7 @@ class VotoSessaoPautaServiceTest {
     }
 
     @Test
-    void testSaveUsuarioJaVotou() {
+    void testSalvarUsuarioJaVotou() {
         when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
         when(votoSessaoPautaRepository.existeVotoUsuarioNaSessao(pauta.getId(), votoSessaoPauta.getCpf())).thenReturn(1);
 
@@ -137,7 +140,7 @@ class VotoSessaoPautaServiceTest {
     }
 
     @Test
-    void testSavePautaCancelada() {
+    void testSalvarPautaCancelada() {
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(30));
         when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pautaCancelada);
 
@@ -152,7 +155,7 @@ class VotoSessaoPautaServiceTest {
     }
 
     @Test
-    void testSaveVotoPautaNaoIniciada() {
+    void testSalvarVotoPautaNaoIniciada() {
         pauta.setTempoLimiteEmAberto(null);
         when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
 
@@ -167,7 +170,7 @@ class VotoSessaoPautaServiceTest {
     }
 
     @Test
-    void testSaveTempoLimiteEsgotado() {
+    void testSalvarTempoLimiteEsgotado() {
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(30));
         when(pautaService.encontraPorId(votoSessaoPauta.getPauta().getId())).thenReturn(pauta);
 

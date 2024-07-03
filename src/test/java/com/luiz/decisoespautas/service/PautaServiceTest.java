@@ -1,5 +1,7 @@
 package com.luiz.decisoespautas.service;
 
+import com.luiz.decisoespautas.dtos.v1.PautaRequestDTO;
+import com.luiz.decisoespautas.dtos.v1.mappers.PautaMapper;
 import com.luiz.decisoespautas.entities.Pauta;
 import com.luiz.decisoespautas.repositories.PautaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -24,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 class PautaServiceTest {
 
+    PautaRequestDTO pautaRequestDTO;
     Pauta pauta;
     Pauta pautaCancelada;
 
@@ -34,16 +37,20 @@ class PautaServiceTest {
 
     @BeforeEach
     void setUp() {
-        pauta = new Pauta();
-        pauta.setId(1L);
-        pauta.setTitulo("Titulo");
-        pauta.setDescricao("Descrição");
+        pautaRequestDTO = new PautaRequestDTO();
+        pautaRequestDTO.setId(1L);
+        pautaRequestDTO.setTitulo("Titulo");
+        pautaRequestDTO.setDescricao("Descrição");
 
-        pautaCancelada = new Pauta();
-        pautaCancelada.setId(2L);
-        pautaCancelada.setTitulo("Titulo Cancelada");
-        pautaCancelada.setDescricao("Descrição Cancelada");
-        pautaCancelada.setCancelado(true);
+        pauta = PautaMapper.parsePauta(pautaRequestDTO);
+
+        PautaRequestDTO pautaCanceladaDTO = new PautaRequestDTO();
+        pautaCanceladaDTO.setId(2L);
+        pautaCanceladaDTO.setTitulo("Titulo Cancelada");
+        pautaCanceladaDTO.setDescricao("Descrição Cancelada");
+        pautaCanceladaDTO.setCancelado(true);
+
+        pautaCancelada = PautaMapper.parsePauta(pautaCanceladaDTO);
 
         MockitoAnnotations.openMocks(this);
     }
@@ -51,25 +58,25 @@ class PautaServiceTest {
     @Test
     void testListar() {
         when(pautaRepository.listarPautasComVotos()).thenReturn(List.of(pauta));
-        Pauta pautaTest = pautaService.listar().getFirst();
-        assertEquals(pauta.getId(), pautaTest.getId());
-        assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
-        assertEquals(pauta.getDescricao(), pautaTest.getDescricao());
+        PautaRequestDTO pautaTest = pautaService.listar().getFirst();
+        assertEquals(pautaRequestDTO.getId(), pautaTest.getId());
+        assertEquals(pautaRequestDTO.getTitulo(), pautaTest.getTitulo());
+        assertEquals(pautaRequestDTO.getDescricao(), pautaTest.getDescricao());
     }
 
     @Test
     void testEncontraPorId() {
-        when(pautaRepository.encontrarPautasPorIdComVotos(pauta.getId())).thenReturn(Optional.of(pauta));
-        Pauta pautaTest = pautaService.encontraPorId(pauta.getId());
-        assertEquals(pauta.getId(), pautaTest.getId());
-        assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
-        assertEquals(pauta.getDescricao(), pautaTest.getDescricao());
+        when(pautaRepository.encontrarPautasPorIdComVotos(pautaRequestDTO.getId())).thenReturn(Optional.of(pauta));
+        PautaRequestDTO pautaTest = pautaService.encontraPorId(pautaRequestDTO.getId());
+        assertEquals(pautaRequestDTO.getId(), pautaTest.getId());
+        assertEquals(pautaRequestDTO.getTitulo(), pautaTest.getTitulo());
+        assertEquals(pautaRequestDTO.getDescricao(), pautaTest.getDescricao());
     }
 
     @Test
     void testEncontraPorIdNotFound() {
-        when(pautaRepository.encontrarPautasPorIdComVotos(pauta.getId())).thenReturn(Optional.empty());
-        Long idPauta = pauta.getId();
+        when(pautaRepository.encontrarPautasPorIdComVotos(pautaRequestDTO.getId())).thenReturn(Optional.empty());
+        Long idPauta = pautaRequestDTO.getId();
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> pautaService.encontraPorId(idPauta));
         String erroEsperado = "Pauta não encontrada.";
         String erro = exception.getMessage();
@@ -78,7 +85,7 @@ class PautaServiceTest {
 
     @Test
     void testPautaCancelada() {
-        pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(2L));
+        pautaRequestDTO.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(2L));
         when(pautaRepository.encontrarPautasPorIdComVotos(pautaCancelada.getId())).thenReturn(Optional.of(pautaCancelada));
         Long idPauta = pautaCancelada.getId();
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> pautaService.ativarVotacao(idPauta));
@@ -90,8 +97,8 @@ class PautaServiceTest {
     @Test
     void testPautaVotacaoEncerrada() {
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().minusMinutes(2L));
-        when(pautaRepository.encontrarPautasPorIdComVotos(pauta.getId())).thenReturn(Optional.of(pauta));
-        Long idPauta = pauta.getId();
+        when(pautaRepository.encontrarPautasPorIdComVotos(pautaRequestDTO.getId())).thenReturn(Optional.of(pauta));
+        Long idPauta = pautaRequestDTO.getId();
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> pautaService.ativarVotacao(idPauta));
         String erroEsperado = "Pauta encerrada.";
         String erro = exception.getMessage();
@@ -101,8 +108,8 @@ class PautaServiceTest {
     @Test
     void testPautaEmVotacao() {
         pauta.setTempoLimiteEmAberto(LocalDateTime.now().plusMinutes(30L));
-        when(pautaRepository.encontrarPautasPorIdComVotos(pauta.getId())).thenReturn(Optional.of(pauta));
-        Long idPauta = pauta.getId();
+        when(pautaRepository.encontrarPautasPorIdComVotos(pautaRequestDTO.getId())).thenReturn(Optional.of(pauta));
+        Long idPauta = pautaRequestDTO.getId();
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> pautaService.ativarVotacao(idPauta));
         String erroEsperado = "Pauta está em votação.";
         String erro = exception.getMessage();
@@ -110,11 +117,11 @@ class PautaServiceTest {
     }
 
     @Test
-    void testSave() {
+    void testSalvar() {
         when(pautaRepository.save(pauta)).thenReturn(pauta);
-        Pauta pautaTest = pautaService.save(pauta);
-        assertEquals(pauta.getId(), pautaTest.getId());
-        assertEquals(pauta.getTitulo(), pautaTest.getTitulo());
-        assertEquals(pauta.getDescricao(), pautaTest.getDescricao());
+        PautaRequestDTO pautaTest = pautaService.salvar(pautaRequestDTO);
+        assertEquals(pautaRequestDTO.getId(), pautaTest.getId());
+        assertEquals(pautaRequestDTO.getTitulo(), pautaTest.getTitulo());
+        assertEquals(pautaRequestDTO.getDescricao(), pautaTest.getDescricao());
     }
 }

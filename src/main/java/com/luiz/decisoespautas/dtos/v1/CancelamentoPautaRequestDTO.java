@@ -1,4 +1,4 @@
-package com.luiz.decisoespautas.dtos;
+package com.luiz.decisoespautas.dtos.v1;
 
 import lombok.Getter;
 
